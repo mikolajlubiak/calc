@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 
 from sys import argv
 from math import sqrt
 
-def parens(s: str, i: int):
+def parens(s: tuple, i: int):
     openers = {"(": ")"}
     closers = {v: k for k, v in openers.items()}
     stack = []
@@ -27,55 +27,59 @@ def parens(s: str, i: int):
 def calc(s: tuple):
     so = list(s)
     for i in range(len(s)):
-        if s[i] == "(":
-            d = parens(s, i)
-            sb = []
-            for x in range(i, d+1):
-                sb.append(so[i])
-                so.pop(i)
-            sb.pop(0)
-            sb.pop()
-            so.insert(i, calc(sb))
-            return calc(tuple(so))
+        match s[i]:
+            case "(":
+                d = parens(s, i)
+                sb = []
+                for x in range(i, d+1):
+                    sb.append(so[i])
+                    so.pop(i)
+                sb.pop(0)
+                sb.pop()
+                so.insert(i, calc(sb))
+                return calc(tuple(so))
     for i in range(len(s)-1):
-        if s[i] == "**":
-            so.pop(i-1)
-            so.pop(i-1)
-            so.pop(i-1)
-            so.insert(i-1, float(s[i-1]) ** float(s[i+1]))
-            return calc(tuple(so))
-        elif s[i] == "//":
-            so.pop(i)
-            so.pop(i)
-            so.insert(i, sqrt(float(s[i+1])))
-            return calc(tuple(so))
+        match s[i]:
+            case "**":
+                so.pop(i-1)
+                so.pop(i-1)
+                so.pop(i-1)
+                so.insert(i-1, float(s[i-1]) ** float(s[i+1]))
+                return calc(tuple(so))
+            case "//":
+                so.pop(i)
+                so.pop(i)
+                so.insert(i, sqrt(float(s[i+1])))
+                return calc(tuple(so))
     for i in range(1, len(s)-1):
-        if s[i] == "*":
-            so.pop(i-1)
-            so.pop(i-1)
-            so.pop(i-1)
-            so.insert(i-1, float(s[i-1]) * float(s[i+1]))
-            return calc(tuple(so))
-        elif s[i] == "/":
-            so.pop(i-1)
-            so.pop(i-1)
-            so.pop(i-1)
-            so.insert(i-1, float(s[i-1]) / float(s[i+1]))
-            return calc(tuple(so))
+        match s[i]:
+            case "*":
+                so.pop(i-1)
+                so.pop(i-1)
+                so.pop(i-1)
+                so.insert(i-1, float(s[i-1]) * float(s[i+1]))
+                return calc(tuple(so))
+            case "/":
+                so.pop(i-1)
+                so.pop(i-1)
+                so.pop(i-1)
+                so.insert(i-1, float(s[i-1]) / float(s[i+1]))
+                return calc(tuple(so))
     for i in range(1, len(s)-1):
-        if s[i] == "+":
-            so.pop(i-1)
-            so.pop(i-1)
-            so.pop(i-1)
-            so.insert(i-1, float(s[i-1]) + float(s[i+1]))
-            return calc(tuple(so))
-        elif s[i] == "-":
-            so.pop(i-1)
-            so.pop(i-1)
-            so.pop(i-1)
-            so.insert(i-1, float(s[i-1]) - float(s[i+1]))
-            return calc(tuple(so))
-    return float(s[0])
+        match s[i]:
+            case "+":
+                so.pop(i-1)
+                so.pop(i-1)
+                so.pop(i-1)
+                so.insert(i-1, float(s[i-1]) + float(s[i+1]))
+                return calc(tuple(so))
+            case "-":
+                so.pop(i-1)
+                so.pop(i-1)
+                so.pop(i-1)
+                so.insert(i-1, float(s[i-1]) - float(s[i+1]))
+                return calc(tuple(so))
+    return s[0]
 if __name__ == "__main__":
     try:
         print(calc(argv[1].split(" ")))

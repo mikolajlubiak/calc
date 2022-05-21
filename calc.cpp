@@ -2,55 +2,73 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <stack>
+#include <cmath>
+
+unsigned short parens(std::vector<std::string> s, unsigned short i) {
+  std::stack<unsigned short> st;
+  for (unsigned short ii=i; ii < s.size(); ii++) {
+    if (s[ii] == "(") {
+      st.push(0);
+    }
+    else if (s[ii] == ")") {
+      st.pop();
+      if (st.empty()) {
+        return ii;
+      }
+    }
+  }
+  return 0;
+}
 
 long double calc(std::vector<std::string> s) {
   std::vector<std::string> so(s);
   for (unsigned short i = 0; i <= s.size(); i++) {
-    if (s[i] == "(") {
-      for (unsigned short x = i; x <= s.size(); x++) {
-        if (s[x] == ")") {
-          so.erase(so.begin()+i, so.begin()+x+1);
-          std::vector<std::string> sb(s.begin()+i+1, s.begin()+x);
-          so.insert(so.begin()+i, std::to_string(calc(sb)));
-          return calc(so);
-        }
-      }
+    if (s[i] == "("){
+      unsigned short d = parens(s, i);
+      so.erase(so.begin()+i, so.begin()+d+1);
+      std::vector<std::string> sb(s.begin()+i+1, s.begin()+d);
+      so.insert(so.begin()+i, std::to_string(calc(sb)));
+      return calc(so);
     }
   }
   for (unsigned short i = 0; i <= s.size(); i++) {
+    if (s[i] == "**") {
+      so.erase(so.begin()+i-1, so.begin()+i+2);
+      so.insert(so.begin()+i-1, std::to_string(std::pow(stod(s[i-1]), stod(s[i+1]))));
+      return calc(so);
+    }
+    else if (s[i] == "//") {
+        so.erase(so.begin()+i, so.begin()+i+1);
+        so.insert(so.begin()+i, std::to_string(std::sqrt(stod(s[i+1]))));
+        return calc(so);
+    }
+  }
+  for (unsigned short i = 1; i <= s.size(); i++) {
     if (s[i] == "*") {
       so.erase(so.begin()+i-1, so.begin()+i+2);
       so.insert(so.begin()+i-1, std::to_string(stod(s[i-1]) * stod(s[i+1])));
       return calc(so);
     }
     else if (s[i] == "/") {
-      so.erase(so.begin()+i-1, so.begin()+i+2);
-      so.insert(so.begin()+i-1, std::to_string(stod(s[i-1]) / stod(s[i+1])));
-      return calc(so);
+        so.erase(so.begin()+i-1, so.begin()+i+2);
+        so.insert(so.begin()+i-1, std::to_string(stod(s[i-1]) / stod(s[i+1])));
+        return calc(so);
     }
   }
-  for (unsigned short i = 0; i <= s.size(); i++) {
+  for (unsigned short i = 1; i <= s.size(); i++) {
     if (s[i] == "+") {
       so.erase(so.begin()+i-1, so.begin()+i+2);
       so.insert(so.begin()+i-1, std::to_string(stod(s[i-1]) + stod(s[i+1])));
       return calc(so);
     }
     else if (s[i] == "-") {
-      so.erase(so.begin()+i-1, so.begin()+i+2);
-      so.insert(so.begin()+i-1, std::to_string(stod(s[i-1]) - stod(s[i+1])));
-      return calc(so);
+        so.erase(so.begin()+i-1, so.begin()+i+2);
+        so.insert(so.begin()+i-1, std::to_string(stod(s[i-1]) - stod(s[i+1])));
+        return calc(so);
     }
   }
-  unsigned short op = 0;
-  for (unsigned short i = 0; i <= s.size(); i++) {
-    if (s[i] == "*" || s[i] == "/" || s[i] == "+" || s[i] == "-" ) {
-      op++;
-    }
-  }
-  if (op == 0) {
-    return stod(s[0]);
-  }
-  return 1;
+  return stod(s[0]);
 }
 
 int main(int argc, char *argv[]) {
