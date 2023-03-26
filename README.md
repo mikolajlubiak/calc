@@ -1,5 +1,6 @@
 # Calculator
-## Very advanced calculator in Python and C++.
-### Keeps order of operation.
+## Calculator in Python and C++. Keeps order of operation. Supports addition, substraction, multiplication, dividsion, exponentiation and squered roots.
 
-Usage `./calc.py "( 3 ** 4 * ( 5 / // 6 ) ) + 7 - 8"` or `./calc "( 3 ** 4 * ( 5 / // 6 ) ) + 7 - 8"`, returns `164.34055763786452`
+# Usage:
+	python calc.py "( 3 ** 4 * ( 5 / // 6 ) ) + 7 - 8"
+	./calc "( 3 ** 4 * ( 5 / // 6 ) ) + 7 - 8"
